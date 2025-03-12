@@ -40,9 +40,19 @@ services:
     networks:
       - app-network
 
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
+
 volumes:
   mongo_data:
     driver: local
+  redis_data:
 
 networks:
   app-network:
