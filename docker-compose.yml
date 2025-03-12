@@ -1,0 +1,49 @@
+services:
+  mongodb:
+    image: mongo:6
+    container_name: mongo_db
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - app-network
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo_ui
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password
+      ME_CONFIG_MONGODB_URL: mongodb://admin:password@mongodb:27017
+      ME_CONFIG_BASICAUTH: "false"
+    depends_on:
+      - mongodb
+    networks:
+      - app-network
+
+  app:
+    build: .
+    container_name: leaderboard-app
+    restart: always
+    depends_on:
+      - mongodb
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+
+volumes:
+  mongo_data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
