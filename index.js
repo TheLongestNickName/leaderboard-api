@@ -26,9 +26,12 @@ app.use(apiLimiter);
 
 app.use("/api/auth", authRoutes);
 
-app.use("/api/leaderboard/top", cacheMiddleware(600));
-
-app.use("/api/leaderboard", authMiddleware, leaderboardRoutes);
+app.use(
+  "/api/leaderboard",
+  authMiddleware,
+  cacheMiddleware(600),
+  leaderboardRoutes
+);
 
 app.listen(PORT, () =>
   console.log(`🚀 Server has been runing on server port ${PORT}`)
