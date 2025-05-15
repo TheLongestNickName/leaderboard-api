@@ -45,6 +45,11 @@ router.post("/login", async (req, res) => {
       }
     );
 
+    res.cookie("token", token, {
+      maxAge: 60000 * 60,
+      httpOnly: true,
+      signed: true,
+    });
     res.status(200).json({ token });
   } catch (error) {
     res.status(500).json({ message: "❌ Server error" });

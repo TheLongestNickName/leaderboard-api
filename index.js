@@ -6,6 +6,9 @@ import authRoutes from "./routes/auth.js";
 import authMiddleware from "./middleware/auth.js";
 import { apiLimiter } from "./middleware/rateLimit.js";
 import { cacheMiddleware } from "./middleware/cache.js";
+import cookieParser from "cookie-parser";
+import session from "express-session";
+import cors from "cors";
 
 dotenv.config();
 
@@ -21,8 +24,24 @@ mongoose
   .catch((err) => console.error("❌ Error to connect to mongo:", err));
 
 app.use(express.json());
-
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 app.use(apiLimiter);
+app.use(cookieParser("mySpecialKey"));
+app.use(
+  session({
+    secret: "my secret session",
+    saveUninitialized: false,
+    resave: false,
+    cookie: {
+      maxAge: 60000 * 60,
+    },
+  })
+);
 
 app.use("/api/auth", authRoutes);
 

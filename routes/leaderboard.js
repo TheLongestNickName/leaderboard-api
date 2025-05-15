@@ -1,4 +1,4 @@
-import express from "express";
+import express, { request, response } from "express";
 import Score from "../models/Score.js";
 
 const router = express.Router();
@@ -42,6 +42,18 @@ router.get("/rank/:username", async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "❌ Server error" });
   }
+});
+
+router.get("/test/", async (req, res) => {
+  req.session.visited = true;
+  req.session.user = { name: "AAA" };
+
+  res.cookie("testName", "testCookie", {
+    maxAge: 60000 * 60,
+    httpOnly: true,
+    signed: true,
+  });
+  res.status(200).send("asdadas");
 });
 
 export default router;

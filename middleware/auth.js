@@ -1,20 +1,18 @@
 import jwt from "jsonwebtoken";
 
 const authMiddleware = (req, res, next) => {
-  const authHeader = req.headers.authorization;
+  const authToken = req.signedCookies.token;
 
-  if (!authHeader) {
+  if (!authToken) {
     return res.status(401).json({ message: "❌ No token, access denied" });
   }
 
-  const token = authHeader.split(" ")[1];
-
-  if (!token) {
+  if (!authToken) {
     return res.status(401).json({ message: "❌ Token format is incorrect" });
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(authToken, process.env.JWT_SECRET);
     console.log("Decoded token:", JSON.stringify(decoded, null, 2));
     req.user = decoded;
     next();

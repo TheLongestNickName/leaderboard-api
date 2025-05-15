@@ -39,7 +39,10 @@ services:
       - "3000:3000"
     networks:
       - app-network
-
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run dev
   redis:
     image: redis:alpine
     ports:
